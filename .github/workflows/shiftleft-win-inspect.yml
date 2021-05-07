@@ -22,6 +22,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Analyze with NG SAST
-      run: .\sl analyze --force --app juice-shop-win --tag branch=${GITHUB_REF} --wait --js --cpg . -- --with-tests --include-configs
+      run: .\sl analyze --force --app juice-shop-win --tag branch=${GITHUB_REF} --wait --js --cpg . -- --with-tests --include-configs --exclude frontend/dist
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
