@@ -1,0 +1,5 @@
+build_rules:
+  - id: break-critical
+    severity:
+      - SEVERITY_HIGH_IMPACT
+    threshold: 0
