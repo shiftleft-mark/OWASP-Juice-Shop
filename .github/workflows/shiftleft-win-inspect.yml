@@ -20,18 +20,6 @@ jobs:
       uses: actions/setup-java@v1.4.3
       with:
         java-version: 1.8
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.1.5
-      with:
-        node-version: 12
-    - name: Setup Python
-      uses: actions/setup-python@v2.2.2
-      with:
-        # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-        python-version: 2        
-    - name: Test npm install
-      run: |
-        npm install --legacy-peer-deps
     - name: Analyze with NG SAST
       run: |
         .\sl analyze --force --app juice-shop-win --tag branch=${GITHUB_REF} --wait --verbose --js --cpg . -- --with-tests --include-configs --exclude node_modules,vagrant,frontend,dist,data/static,build
