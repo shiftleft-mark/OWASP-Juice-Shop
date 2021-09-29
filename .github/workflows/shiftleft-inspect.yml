@@ -20,6 +20,13 @@ jobs:
       uses: actions/setup-java@v1.4.3
       with:
         java-version: 1.8
+    # Workaround: Perform npm install for node 8 and remove node_modules
+    # This is required since package-lock.json is not commited to git
+    - name: Analyze with NG SAST
+      run: |
+        npm install
+        rm -rf node_modules
+        rm -rf frontend/dist frontend/node_modules dist build
     # ShiftLeft NG SAST ignores test directory by default
     - name: Analyze with NG SAST
       run: ${GITHUB_WORKSPACE}/sl analyze --force --app juice-shop-linux --tag branch=${GITHUB_REF} --verbose --wait --js --cpg . -- --with-tests --include-configs --exclude node_modules,frontend/dist,frontend/node_modules,vagrant,dist,data/static,build
