@@ -1,0 +1,34 @@
+# This workflow integrates ShiftLeft NG SAST with GitHub
+# Visit https://docs.shiftleft.io for help
+name: Analyze with ShiftLeft NG SAST
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  Inspect-Build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download ShiftLeft cli
+      run: |
+        curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
+
+    # ShiftLeft requires Java 1.8. Post the package step override the version
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1.4.3
+      with:
+        java-version: 1.8
+    # Workaround: Perform npm install for node 8 and remove node_modules
+    # This is required since package-lock.json is not commited to git
+    - name: Analyze with NG SAST
+      run: |
+        npm install
+        rm -rf node_modules
+        rm -rf frontend/dist frontend/node_modules dist build
+    # ShiftLeft NG SAST ignores test directory by default
+    - name: Analyze with NG SAST
+      run: ${GITHUB_WORKSPACE}/sl analyze --force --app juice-shop-linux --tag branch=${GITHUB_REF} --verbose --wait --js --cpg . -- --with-tests --include-configs --exclude node_modules,frontend/dist,frontend/node_modules,vagrant,dist,data/static,build
+      env:
+        SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
